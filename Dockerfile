@@ -17,10 +17,20 @@ RUN if [ -n "$CLAWDBOT_DOCKER_APT_PACKAGES" ]; then \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     fi
 
-# === CUSTOM BINARIES FOR IRIS ===
-# (wacli removed - no Linux build available)
-# Add other binaries here if needed
-# === END CUSTOM BINARIES ===
+# === CUSTOM PACKAGES FOR IRIS ===
+# Install vim and other useful tools
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      vim \
+      curl \
+      git \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+# Install Claude Code CLI
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/root/.claude/bin:${PATH}"
+# === END CUSTOM PACKAGES ===
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
