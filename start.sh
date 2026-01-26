@@ -7,5 +7,5 @@ if [ -f "$HOME/clawd/vault-sync.sh" ]; then
     nohup "$HOME/clawd/vault-sync.sh" > /dev/null 2>&1 &
 fi
 
-# Start Clawdbot Gateway
-exec node dist/entry.js gateway start
+# Start Clawdbot Gateway (foreground, no systemd)
+exec node dist/index.js
