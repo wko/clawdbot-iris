@@ -8,4 +8,4 @@ if [ -f "$HOME/clawd/vault-sync.sh" ]; then
 fi
 
 # Start Clawdbot Gateway (foreground, no systemd)
-exec node dist/index.js
+exec node dist/index.js gateway
