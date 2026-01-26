@@ -18,9 +18,8 @@ RUN if [ -n "$CLAWDBOT_DOCKER_APT_PACKAGES" ]; then \
     fi
 
 # === CUSTOM BINARIES FOR IRIS ===
-# WhatsApp CLI (https://github.com/steipete/wacli)
-RUN curl -L https://github.com/steipete/wacli/releases/latest/download/wacli_Linux_x86_64.tar.gz \
-  | tar -xz -C /usr/local/bin && chmod +x /usr/local/bin/wacli
+# (wacli removed - no Linux build available)
+# Add other binaries here if needed
 # === END CUSTOM BINARIES ===
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
