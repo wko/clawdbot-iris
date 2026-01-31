@@ -131,7 +131,7 @@ importers:
         version: 3.15.1(typescript@5.9.3)
       openclaw-agentmail:
         specifier: github:wko/openclaw-agentmail
-        version: https://codeload.github.com/wko/openclaw-agentmail/tar.gz/861b03751efab34de3a4388fbdd9ed2c8eb8437b(openclaw@2026.1.30(@napi-rs/canvas@0.1.89)(@types/express@5.0.6)(audio-decode@2.2.3)(hono@4.11.4)(node-llama-cpp@3.15.1(typescript@5.9.3))(signal-polyfill@0.2.2))
+        version: https://codeload.github.com/wko/openclaw-agentmail/tar.gz/046d01d2e07715b4f2bdbe7bf1e7a248e52204c6(openclaw@2026.1.30(@napi-rs/canvas@0.1.89)(@types/express@5.0.6)(audio-decode@2.2.3)(hono@4.11.4)(node-llama-cpp@3.15.1(typescript@5.9.3))(signal-polyfill@0.2.2))
       osc-progress:
         specifier: ^0.3.0
         version: 0.3.0
@@ -4377,8 +4377,8 @@ packages:
       zod:
         optional: true
 
-  openclaw-agentmail@https://codeload.github.com/wko/openclaw-agentmail/tar.gz/861b03751efab34de3a4388fbdd9ed2c8eb8437b:
-    resolution: {tarball: https://codeload.github.com/wko/openclaw-agentmail/tar.gz/861b03751efab34de3a4388fbdd9ed2c8eb8437b}
+  openclaw-agentmail@https://codeload.github.com/wko/openclaw-agentmail/tar.gz/046d01d2e07715b4f2bdbe7bf1e7a248e52204c6:
+    resolution: {tarball: https://codeload.github.com/wko/openclaw-agentmail/tar.gz/046d01d2e07715b4f2bdbe7bf1e7a248e52204c6}
     version: 1.1.0
     peerDependencies:
       openclaw: '>=2026.1.0'
@@ -9759,7 +9759,7 @@ snapshots:
       ws: 8.19.0
       zod: 4.3.6
 
-  openclaw-agentmail@https://codeload.github.com/wko/openclaw-agentmail/tar.gz/861b03751efab34de3a4388fbdd9ed2c8eb8437b(openclaw@2026.1.30(@napi-rs/canvas@0.1.89)(@types/express@5.0.6)(audio-decode@2.2.3)(hono@4.11.4)(node-llama-cpp@3.15.1(typescript@5.9.3))(signal-polyfill@0.2.2)):
+  openclaw-agentmail@https://codeload.github.com/wko/openclaw-agentmail/tar.gz/046d01d2e07715b4f2bdbe7bf1e7a248e52204c6(openclaw@2026.1.30(@napi-rs/canvas@0.1.89)(@types/express@5.0.6)(audio-decode@2.2.3)(hono@4.11.4)(node-llama-cpp@3.15.1(typescript@5.9.3))(signal-polyfill@0.2.2)):
     dependencies:
       agentmail: 0.2.9
       openclaw: 2026.1.30(@napi-rs/canvas@0.1.89)(@types/express@5.0.6)(audio-decode@2.2.3)(hono@4.11.4)(node-llama-cpp@3.15.1(typescript@5.9.3))(signal-polyfill@0.2.2)
