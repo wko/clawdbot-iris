@@ -1,4 +1,8 @@
-import type { AgentMail } from "agentmail";
+import type { AgentMail, AgentMailClient } from "agentmail";
+import { writeFile, mkdir } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { randomUUID } from "node:crypto";
 
 import {
   getAgentMailClient,
@@ -10,6 +14,62 @@ import { checkSenderAllowed, labelMessageAllowed } from "./filtering.js";
 import { extractMessageBody, fetchFormattedThread } from "./thread.js";
 import { parseEmailFromAddress, parseNameFromAddress } from "./utils.js";
 import type { CoreConfig } from "./utils.js";
+
+type DownloadedAttachment = {
+  path: string;
+  contentType: string;
+  filename: string;
+};
+
+/**
+ * Downloads attachments from a message and saves them to temp directory.
+ * Returns array of downloaded file info.
+ */
+async function downloadAttachments(
+  client: AgentMailClient,
+  inboxId: string,
+  messageId: string,
+  attachments: AgentMail.Attachment[] | undefined,
+  logVerbose: (msg: string) => void
+): Promise<DownloadedAttachment[]> {
+  if (!attachments?.length) return [];
+
+  const results: DownloadedAttachment[] = [];
+  const tempDir = join(tmpdir(), "openclaw-agentmail", randomUUID());
+  await mkdir(tempDir, { recursive: true });
+
+  for (const att of attachments) {
+    try {
+      logVerbose(`agentmail: downloading attachment ${att.filename ?? att.attachmentId}`);
+      
+      // Download the attachment content
+      const fileData = await client.inboxes.messages.getAttachment(
+        inboxId,
+        messageId,
+        att.attachmentId
+      );
+      
+      // Determine filename
+      const filename = att.filename ?? `attachment-${att.attachmentId}`;
+      const filePath = join(tempDir, filename);
+      
+      // Save to temp file
+      await writeFile(filePath, Buffer.from(fileData as ArrayBuffer));
+      
+      results.push({
+        path: filePath,
+        contentType: att.contentType ?? "application/octet-stream",
+        filename,
+      });
+      
+      logVerbose(`agentmail: saved attachment to ${filePath}`);
+    } catch (err) {
+      logVerbose(`agentmail: failed to download attachment ${att.attachmentId}: ${String(err)}`);
+    }
+  }
+
+  return results;
+}
 
 export type MonitorAgentMailOptions = {
   accountId?: string | null;
@@ -152,6 +212,15 @@ export async function monitorAgentMailProvider(
 
       recordState(accountId, { lastInboundAt: Date.now() });
 
+      // Download attachments
+      const downloadedAttachments = await downloadAttachments(
+        client,
+        inboxId,
+        message.messageId,
+        message.attachments,
+        logVerbose
+      );
+
       // Fetch the full thread from API
       const threadBody = await fetchFormattedThread(
         client,
@@ -214,6 +283,19 @@ export async function monitorAgentMailProvider(
         CommandSource: "text" as const,
         OriginatingChannel: "agentmail" as const,
         OriginatingTo: inboxId,
+        // Media attachments
+        MediaPath: downloadedAttachments[0]?.path,
+        MediaType: downloadedAttachments[0]?.contentType,
+        MediaUrl: downloadedAttachments[0]?.path,
+        MediaPaths: downloadedAttachments.length > 0 
+          ? downloadedAttachments.map((a) => a.path) 
+          : undefined,
+        MediaUrls: downloadedAttachments.length > 0 
+          ? downloadedAttachments.map((a) => a.path) 
+          : undefined,
+        MediaTypes: downloadedAttachments.length > 0 
+          ? downloadedAttachments.map((a) => a.contentType) 
+          : undefined,
       });
 
       // Record session
