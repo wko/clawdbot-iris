@@ -1,0 +1,65 @@
+{
+  "name": "openclaw-agentmail",
+  "version": "1.1.0",
+  "description": "AgentMail email channel plugin for OpenClaw - secure, reply-only email integration",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wko/openclaw-agentmail"
+  },
+  "keywords": [
+    "openclaw",
+    "agentmail",
+    "email",
+    "channel",
+    "plugin",
+    "ai-agent"
+  ],
+  "author": "Walter Forkel",
+  "license": "MIT",
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "agentmail",
+      "label": "AgentMail (Email Inbox API)",
+      "selectionLabel": "AgentMail (Email Inbox API)",
+      "docsPath": "/channels/agentmail",
+      "docsLabel": "agentmail",
+      "blurb": "Secure email channel via AgentMail; reply-only mode for safety.",
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "openclaw-agentmail",
+      "defaultChoice": "npm"
+    }
+  },
+  "dependencies": {
+    "agentmail": "^0.2.6",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "openclaw": "^2026.1.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0",
+    "oxlint": "^0.10.0"
+  },
+  "peerDependencies": {
+    "openclaw": ">=2026.1.0"
+  },
+  "files": [
+    "index.ts",
+    "src",
+    "openclaw.plugin.json",
+    "README.md",
+    "CHANGELOG.md"
+  ]
+}
