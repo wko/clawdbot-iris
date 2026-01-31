@@ -18,5 +18,44 @@ fi
 echo "[startup] Running config doctor..."
 node dist/index.js doctor --non-interactive 2>&1 || echo "[startup] ⚠️  Config issues detected - gateway may fail to start"
 
-# Start OpenClaw Gateway (foreground, no systemd)
-exec node dist/index.js gateway --allow-unconfigured
+# === Resilient gateway startup ===
+# If gateway crashes (e.g. invalid config), keep container alive for SSH debugging
+MAX_FAST_RESTARTS=3
+FAST_RESTART_WINDOW=30
+restart_count=0
+last_restart=0
+
+while true; do
+    now=$(date +%s)
+    
+    # Reset counter if enough time passed since last restart
+    if [ $((now - last_restart)) -gt $FAST_RESTART_WINDOW ]; then
+        restart_count=0
+    fi
+    
+    echo "[startup] Starting OpenClaw Gateway..."
+    node dist/index.js gateway --allow-unconfigured
+    exit_code=$?
+    last_restart=$(date +%s)
+    restart_count=$((restart_count + 1))
+    
+    echo "[startup] Gateway exited with code $exit_code (restart $restart_count/$MAX_FAST_RESTARTS)"
+    
+    # If crashing too fast, go into recovery mode
+    if [ $restart_count -ge $MAX_FAST_RESTARTS ]; then
+        echo ""
+        echo "╔════════════════════════════════════════════════════════════════╗"
+        echo "║  🛑 RECOVERY MODE - Gateway crashed $MAX_FAST_RESTARTS times in ${FAST_RESTART_WINDOW}s          ║"
+        echo "║                                                                ║"
+        echo "║  Container kept alive for SSH debugging.                       ║"
+        echo "║  Config: ~/.clawdbot/openclaw.json                             ║"
+        echo "║                                                                ║"
+        echo "║  Fix config, then: pkill -f 'sleep infinity' to restart        ║"
+        echo "╚════════════════════════════════════════════════════════════════╝"
+        echo ""
+        sleep infinity
+    fi
+    
+    # Brief pause before restart
+    sleep 2
+done
