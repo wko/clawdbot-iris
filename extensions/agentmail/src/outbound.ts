@@ -41,11 +41,12 @@ async function sendMessage(params: {
 
 /** Outbound adapter for the AgentMail channel. */
 export const agentmailOutbound: ChannelOutboundAdapter = {
-  deliveryMode: "direct",
-  chunker: (text, limit) =>
-    getAgentMailRuntime().channel.text.chunkMarkdownText(text, limit),
-  chunkerMode: "markdown",
-  textChunkLimit: 4000,
+  // Use batch mode: collect all content, send as single email at the end
+  deliveryMode: "batch",
+  
+  // No chunking for email - send complete response as one message
+  // Email has no practical length limit like chat messages do
+  textChunkLimit: 100000,
 
   sendText: ({ to, text, replyToId }) =>
     sendMessage({ to, text, replyToId: replyToId ?? undefined }),
