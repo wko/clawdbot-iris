@@ -24,6 +24,7 @@ RUN apt-get update && \
       curl \
       git \
       jq \
+      cron \
       python3 \
       python3-pip \
       python3-venv \

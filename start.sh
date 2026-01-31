@@ -8,6 +8,16 @@ if [ -d "$HOME/.clawdbot" ] && [ ! -e "$HOME/.openclaw" ]; then
     ln -sfn "$HOME/.clawdbot" "$HOME/.openclaw"
 fi
 
+# Start cron daemon
+echo "[startup] Starting cron daemon..."
+cron
+
+# Load user crontab if it exists in workspace
+if [ -f "$HOME/clawd/crontab" ]; then
+    echo "[startup] Loading crontab from workspace..."
+    crontab "$HOME/clawd/crontab"
+fi
+
 # Start vault sync in background (if workspace exists)
 if [ -f "$HOME/clawd/vault-sync.sh" ]; then
     echo "[startup] Starting vault-sync..."
