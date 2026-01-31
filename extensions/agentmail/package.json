@@ -1,0 +1,32 @@
+{
+  "name": "@openclaw/agentmail",
+  "version": "2026.1.27-beta.1",
+  "type": "module",
+  "description": "OpenClaw AgentMail email channel plugin",
+  "openclaw": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "channel": {
+      "id": "agentmail",
+      "label": "AgentMail (Email Inbox API)",
+      "selectionLabel": "AgentMail (Email Inbox API)",
+      "docsPath": "/channels/agentmail",
+      "docsLabel": "agentmail",
+      "blurb": "email channel via AgentMail; dedicated agent inbox API.",
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@openclaw/agentmail",
+      "localPath": "extensions/agentmail",
+      "defaultChoice": "npm"
+    }
+  },
+  "dependencies": {
+    "agentmail": "^0.2.6",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "openclaw": "workspace:*"
+  }
+}
