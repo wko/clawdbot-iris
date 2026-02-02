@@ -409,8 +409,13 @@ export async function applyMediaUnderstanding(params: {
       }
       ctx.MediaUnderstanding = [...(ctx.MediaUnderstanding ?? []), ...outputs];
     }
-    if (fileBlocks.length > 0) {
-      ctx.Body = appendFileBlocks(ctx.Body, fileBlocks);
+    // PATCH: Skip audio file blocks after successful transcription (issue #4197)
+    const audioTranscribed = outputs.some((o) => o.kind === "audio.transcription");
+    const filteredBlocks = audioTranscribed
+      ? fileBlocks.filter((b) => !b.match(/\.(ogg|opus|mp3|m4a|wav|webm)["']/i))
+      : fileBlocks;
+    if (filteredBlocks.length > 0) {
+      ctx.Body = appendFileBlocks(ctx.Body, filteredBlocks);
     }
     if (outputs.length > 0 || fileBlocks.length > 0) {
       finalizeInboundContext(ctx, {
